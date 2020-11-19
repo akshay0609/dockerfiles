@@ -1,0 +1,5 @@
+FROM akshay0609/ruby_with_git:ruby-2.7.1
+
+ENV RAILS_VERSION 5.0.1
+
+RUN gem install rails --version "$RAILS_VERSION"

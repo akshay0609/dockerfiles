@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  web:
+    container_name: ${APP_NAME}
+    build:
+      context: ${PWD}/
+      dockerfile: Dockerfile
+    networks:
+      - <%= APP-NAME %>-network
+    command: bundle exec puma -C config/puma.rb
+    volumes:
+      - ${PWD}:/workspace
+      - gems:/gems
+    env_file:
+      - '.env'
+    ports:
+      - ${PUMA_PORT}:${PUMA_PORT}
+    depends_on:
+      - db
+    restart: always
+  db:
+    container_name: <%= APP-NAME %>-db
+    image: postgres:9.6.20
+    networks:
+      - <%= APP-NAME %>-network
+    volumes:
+     - <%= APP-NAME %>-db:/data/db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=<%= DATABASE-NAME %>
+    restart: on-failure:5
+
+networks:
+  <%= APP-NAME %>-network:
+
+volumes:
+  gems:
+  <%= APP-NAME %>-db:
