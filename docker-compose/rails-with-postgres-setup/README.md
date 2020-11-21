@@ -9,6 +9,7 @@ You just need to replace env file fields according to your requirement
 $ docker-compose run web bash
 $bash/ bundle exec rails new . --force --database=postgresql
 $ #Update database.yml by using config/database.yml
+$ chown -R admin:admin  *
 $ docker-compose -d up
 $ docker-compose logs
 $ docker-compose down
