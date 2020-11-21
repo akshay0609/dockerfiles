@@ -1,6 +1,6 @@
 # Rails with postgres setup
 
-In this we added docker-compose, Dokcerfile, and env.
+In this I added docker-compose, Dockerfile, and env.
 You just need to replace following fields with your requirements
 - <%= APP-NAME %>
 - <%= DATABASE-USERNAME %>
