@@ -1,0 +1,79 @@
+version: '3'
+
+services:
+  kong-database:
+    container_name: kong-database
+    image: postgres:10.8
+    volumes:
+      - kong-db:/data/db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    restart: on-failure:5
+    ports:
+      - $POSTGRES_PORT::5432
+
+  kong-migrations:
+    image: kong:latest
+    entrypoint: sh -c "kong migrations bootstrap -v"
+    environment:
+      KONG_DATABASE: ${KONG_DATABASE}
+      KONG_PG_HOST: ${KONG_DB_HOST}
+      KONG_PG_DATABASE: ${KONG_DB_NAME}
+      KONG_PG_USER: ${KONG_DB_USERNAME}
+      KONG_PG_PASSWORD: ${KONG_DB_PASSWORD}
+    depends_on:
+    - kong-database
+    restart: on-failure
+
+  kong:
+    image: kong:latest
+    container_name: kong
+    ports:
+      - $KONG_PROXY_PORT:8000
+      - $KONG_PROXY_SSL_PORT:8443
+      - $KONG_PROXY_ADMIN_API_PORT:8001
+      - $KONG_PROXY_ADMIN_SSL_API_PORT:8444
+    environment:
+      KONG_DATABASE: ${KONG_DATABASE}
+      KONG_PG_HOST: ${KONG_DB_HOST}
+      KONG_PG_DATABASE: ${KONG_DB_NAME}
+      KONG_PG_USER: ${KONG_DB_USERNAME}
+      KONG_PG_PASSWORD: ${KONG_DB_PASSWORD}
+      KONG_PROXY_ACCESS_LOG: ${KONG_PROXY_ACCESS_LOG}
+      KONG_ADMIN_ACCESS_LOG: ${KONG_ADMIN_ACCESS_LOG}
+      KONG_PROXY_ERROR_LOG: ${KONG_PROXY_ERROR_LOG}
+      KONG_ADMIN_ERROR_LOG: ${KONG_ADMIN_ERROR_LOG}
+    links:
+      - kong-database
+    depends_on:
+      - kong-database
+    restart: on-failure:20
+
+  konga:
+    container_name: konga
+    image: pantsel/konga:latest
+    environment:
+      TOKEN_SECRET: ${KONGA_TOKEN_SECRET}
+      DB_ADAPTER: ${KONG_DATABASE}
+      DB_HOST: ${KONGA_DB_HOST}
+      DB_PORT: ${KONGA_DB_PORT}
+      DB_DATABASE: ${KONGA_DB_NAME}
+      DB_USER: ${KONGA_DB_USERNAME}
+      DB_PASSWORD: ${KONGA_DB_PASSWORD}
+      NODE_ENV: ${KONGA_ENV}
+      KONGA_HOOK_TIMEOUT: 10000
+    ports:
+      - $KONGA_PORT:1337
+    depends_on:
+      - kong-database
+    restart: on-failure:5
+
+networks:
+  default:
+    external:
+      name: kong-network
+
+volumes:
+  kong-db:

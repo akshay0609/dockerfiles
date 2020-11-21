@@ -1,0 +1,40 @@
+# ********************************************
+# ********************************************
+
+curl --location --request POST 'http://localhost:8001/services/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name": "admin-api",
+    "host": "localhost",
+    "port": 8001
+}'
+
+# ********************************************
+# ********************************************
+
+curl --location --request POST 'http://localhost:8001/services/{service_id|service_name}/routes' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "paths": ["/admin-api"]
+}'
+
+# ********************************************
+# ********************************************
+
+curl -X POST http://localhost:8001/services/{service_id|service_name}/plugins \
+    --data "name=key-auth" 
+
+# ********************************************
+# ********************************************
+
+curl --location --request POST 'http://localhost:8001/consumers/' \
+--form 'username=konga' \
+--form 'custom_id=a7b4120e2-f24d-40d0-ad1a-a0df359d14c'
+
+# ********************************************
+# ********************************************
+
+curl --location --request POST 'http://localhost:8001/consumers/a7b4120e2-f24d-40d0-ad1a-a0df359d14c/key-auth'
+
+# ********************************************
+# ********************************************
