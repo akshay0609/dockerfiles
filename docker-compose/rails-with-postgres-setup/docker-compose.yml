@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 
 services:
   web:
@@ -6,35 +6,37 @@ services:
     build:
       context: ${PWD}/
       dockerfile: Dockerfile
-    networks:
-      - <%= APP-NAME %>-network
+      args:
+        APP_NAME: ${APP_NAME}
     command: bundle exec puma -C config/puma.rb
+    networks:
+      - rails-network
     volumes:
-      - ${PWD}:/workspace
+      - ${PWD}:/workspace/${APP_NAME}
       - gems:/gems
     env_file:
       - '.env'
     ports:
-      - ${PUMA_PORT}:${PUMA_PORT}
+      - ${APP_PORT}:3000
     depends_on:
       - db
     restart: always
   db:
-    container_name: <%= APP-NAME %>-db
+    container_name: db
     image: postgres:9.6.20
-    networks:
-      - <%= APP-NAME %>-network
     volumes:
-     - <%= APP-NAME %>-db:/data/db
+     - postgres-db:/data/db
+    networks:
+      - rails-network
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
     restart: on-failure:5
 
-networks:
-  <%= APP-NAME %>-network:
-
 volumes:
   gems:
-  <%= APP-NAME %>-db:
+  postgres-db:
+
+networks:
+  rails-network:

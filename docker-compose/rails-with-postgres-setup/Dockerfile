@@ -1,8 +1,7 @@
 ARG RUBY_VERSION=2.5.1
+ARG APP_NAME=${APP_NAME}
 
 FROM ruby:${RUBY_VERSION}
-
-RUN mkdir -p workspace
 
 RUN apt-get update &&\
 	  apt-get install -y --no-install-recommends \
@@ -12,14 +11,14 @@ RUN apt-get update &&\
     apt-get install -y nodejs &&\
     npm install -g yarn
 
-WORKDIR workspace
+RUN mkdir -p workspace/${APP_NAME}
+
+WORKDIR workspace/${APP_NAME}
 
 ENV BUNDLE_PATH /gems
 
 COPY Gemfile* ./
-COPY package.json yarn.lock ./
 
 RUN bundle check || bundle install
-RUN yarn install --check-files
 
 COPY . .
