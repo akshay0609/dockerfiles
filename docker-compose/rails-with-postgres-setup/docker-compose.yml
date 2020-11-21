@@ -27,9 +27,9 @@ services:
     volumes:
      - <%= APP-NAME %>-db:/data/db
     environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=<%= DATABASE-NAME %>
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     restart: on-failure:5
 
 networks:
