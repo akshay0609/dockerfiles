@@ -1,2 +1,2 @@
 # dockerfiles
-List of all docker images and setup files
+All docker images and setup files
