@@ -1,7 +1,7 @@
 # Docker and Docker-compose
 
 Before start make sure you installed docker and docker-compose on your PC.
-In this I added docker-compose, Dockerfile, and env.
+In this I added docker-compose, Dockerfile, and env files for quick setup.
 
 ### Basic Run Command
 

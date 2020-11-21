@@ -12,5 +12,5 @@ $ ./setup.sh
 Run all command give in create_key_auth file
 # Konga
 1. login to the konga on http://localhost:1337.
-2. create connection key auth.
+2. create connection by key auth.
 3. add connection_name, URL http://kong:8001, and add key get by Create key Auth step.
